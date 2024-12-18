@@ -1,11 +1,11 @@
 import pandas as pd
+import numpy as np
 from sklearn.preprocessing import StandardScaler
 from scipy.stats import multivariate_normal
-import numpy as np
 import matplotlib.pyplot as plt
 
 # Load the dataset provided by the user
-file_path = '/mnt/data/Mall_Customers.csv'
+file_path = 'data\\Mall_Customers.csv'
 data = pd.read_csv(file_path)
 
 # Preprocessing the dataset
@@ -19,7 +19,7 @@ data_scaled = scaler.fit_transform(data_preprocessed)
 # Converting back to a DataFrame for clarity
 data_preprocessed_scaled = pd.DataFrame(data_scaled, columns=data_preprocessed.columns)
 
-# Display the first few rows of the preprocessed data
+# Expectation-Maximization Algorithm
 def expectation_maximization_multivariate(data, num_components, max_iter=100, tol=1e-4):
     n, d = data.shape  # n = number of samples, d = number of dimensions
     weights = np.ones(num_components) / num_components  # Mixture weights
@@ -55,22 +55,24 @@ def expectation_maximization_multivariate(data, num_components, max_iter=100, to
 
     return weights, means, covariances
 
-# Example usage
-num_components = 2  # Assume 2 clusters for this example
+# Applying the EM algorithm on the preprocessed data
+num_components = 3  # Assuming 3 clusters for this example
 data_np = data_preprocessed_scaled.to_numpy()
+
+# Run the EM algorithm
 weights, means, covariances = expectation_maximization_multivariate(data_np, num_components)
 
-# Print results
+# Display the results
 print("Mixture Weights:", weights)
 print("Means:", means)
 print("Covariances:", covariances)
 
-# Step 4: Visualize Results
+# Visualize the results
 plt.scatter(data_np[:, 0], data_np[:, 1], alpha=0.5, label='Data')
 for k in range(num_components):
     plt.scatter(means[k, 0], means[k, 1], label=f'Gaussian {k+1} Mean', s=100)
 plt.title("Clustering with EM Algorithm")
-plt.xlabel("Feature1")
-plt.ylabel("Feature2")
+plt.xlabel("Feature 1")
+plt.ylabel("Feature 2")
 plt.legend()
 plt.show()
